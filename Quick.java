@@ -2,36 +2,43 @@ import java.util.Random;
 import java.util.Arrays;
 public class Quick{
   public static void main(String[] args){
-    for (int i = 0; i<10; i++){
+    //System.out.println("I love you more -- Joseph");
+    for (int i = 0; i<5; i++){
       Random rng = new Random();
-      int size = rng.nextInt(500);
+      int size = rng.nextInt(10) + 1;
       int[] data = new int[size];
       for (int c = 0; c<size; c++){
-        data[c] = rng.nextInt(5000);
+        data[c] = rng.nextInt(2);
       }
       int k = rng.nextInt(size);
       //System.out.println("\ndata: " + Arrays.toString(data));
       System.out.println("the " + k + "th smallest element: " + quickselect(data, k));
-      insertionSort(data);
-      System.out.println("the " + k + "th smallest element according to insertion: "+ data[k]);
+      //insertionSort(data);
+      //System.out.println("the " + k + "th smallest element according to insertion: "+ data[k]);
       //System.out.println(Arrays.toString(data));
       //int pivotInd = partition(data, 1, data.length-1);
       //System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
     }
+
     //System.out.println(partition(data, 1, data.length-1));
   }
   /*return the value that is the kth smallest value of the array.
  */
+ //have to have this account for arrays of size 1
  public static int quickselect(int[] data, int k){
-   boolean foundK = false;
-   while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
-     int ind = partition(data, 1, data.length-1); //run partition, it's return is the final index of the partition
-     if (ind == k){ //if that index is k
-       foundK = true; //then that means it's the kth smallest element
-       return data[ind]; //and you should return it
+   if (data.length > 1){
+     boolean foundK = false;
+     while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
+       int ind = partition(data, 1, data.length-1); //run partition, it's return is the final index of the partition
+       if (ind == k){ //if that index is k
+         foundK = true; //then that means it's the kth smallest element
+         return data[ind]; //and you should return it
+       }
      }
+     return -1; //something broken
+   }else{
+     return data[0];
    }
-   return -1; //something broken
  }
 
 
@@ -53,10 +60,12 @@ public class Quick{
     if (data[start] < pivot){ //you need to switch the start and pivot
       swap(data, start, 0);
       //System.out.println("Final index of " + pivot + " is ");
+      System.out.println("data looks like: " + Arrays.toString(data));
       return start;
     }else{
       swap(data, start-1, 0);
     //  System.out.println("Final index of " + pivot + " is ");
+    //  System.out.println
       return start-1;
     }
   }
