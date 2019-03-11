@@ -2,15 +2,21 @@ import java.util.Random;
 import java.util.Arrays;
 public class Quick{
   public static void main(String[] args){
-    for (int i = 0; i<25; i++){
+    for (int i = 0; i<10; i++){
       Random rng = new Random();
-      int[] data = new int[25];
-      for (int c = 0; c<25; c++){
+      int size = rng.nextInt(500);
+      int[] data = new int[size];
+      for (int c = 0; c<size; c++){
         data[c] = rng.nextInt(5000);
       }
-      System.out.println(Arrays.toString(data));
-      int pivotInd = partition(data, 1, data.length-1);
-      System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
+      int k = rng.nextInt(size);
+      //System.out.println("\ndata: " + Arrays.toString(data));
+      System.out.println("the " + k + "th smallest element: " + quickselect(data, k));
+      insertionSort(data);
+      System.out.println("the " + k + "th smallest element according to insertion: "+ data[k]);
+      //System.out.println(Arrays.toString(data));
+      //int pivotInd = partition(data, 1, data.length-1);
+      //System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
     }
     //System.out.println(partition(data, 1, data.length-1));
   }
@@ -18,12 +24,14 @@ public class Quick{
  */
  public static int quickselect(int[] data, int k){
    boolean foundK = false;
-   while (!foundK){
-     int ind = partition(data, 1, data-1);
-     if (ind = k){
-       return data[ind];
+   while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
+     int ind = partition(data, 1, data.length-1); //run partition, it's return is the final index of the partition
+     if (ind == k){ //if that index is k
+       foundK = true; //then that means it's the kth smallest element
+       return data[ind]; //and you should return it
      }
    }
+   return -1; //something broken
  }
 
 
@@ -70,4 +78,17 @@ public class Quick{
     }
     return true;
   }
-}
+  private static void insertionSort(int[] ary){
+    for (int i = 1; i<ary.length; i++){ //for every int in the array, ignoring the first
+      int current = ary[i]; //make a variable w that value
+      int j = i-1; //make another value that will allow us to get the value right before it
+      while ( j >= 0 && ary[j] > current){ //we're gonna decrease j -- while every index is greater than current
+        ary[j+1] = ary[j]; //move them up one (at first, there will be 2 of ary[j], doesn't matter since current is stored;)
+        j--; //it'll go like abcc to abbc to aabc, finally once either you reach 0 or re no longer getting values less than current
+      }
+       //if not at end, you stopped cuz something is smaller. put it one ahead of the smaller one. this is ok because of the aabc pattern
+      ary[j+1] = current;
+
+    }
+  }
+ }
