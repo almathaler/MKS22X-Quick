@@ -1,6 +1,6 @@
 import java.util.Random;
 import java.util.Arrays;
-public class Partition{
+public class Quick{
   public static void main(String[] args){
     for (int i = 0; i<25; i++){
       Random rng = new Random();
@@ -14,8 +14,22 @@ public class Partition{
     }
     //System.out.println(partition(data, 1, data.length-1));
   }
+  /*return the value that is the kth smallest value of the array.
+ */
+ public static int quickselect(int[] data, int k){
+   boolean foundK = false;
+   while (!foundK){
+     int ind = partition(data, 1, data-1);
+     if (ind = k){
+       return data[ind];
+     }
+   }
+ }
+
+
+
   //start = 1 and end = data.length-1
-  public static int partition(int[] data, int start, int end){
+  private static int partition(int[] data, int start, int end){
     Random rng = new Random();
     int pivotInd = rng.nextInt(data.length);
     int pivot = data[pivotInd];
@@ -38,12 +52,12 @@ public class Partition{
       return start-1;
     }
   }
-  public static void swap(int[] data, int ind1, int ind2){
+  private static void swap(int[] data, int ind1, int ind2){
     int temp = data[ind1];
     data[ind1] = data[ind2];
     data[ind2] = temp;
   }
-  public static boolean sortedIsh(int[] data, int pivotInd){
+  private static boolean sortedIsh(int[] data, int pivotInd){
     for (int i = 0; i<pivotInd; i++){
       if (data[i] > data[pivotInd]){
         return false;
