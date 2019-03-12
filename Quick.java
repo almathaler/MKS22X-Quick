@@ -3,22 +3,8 @@ import java.util.Arrays;
 public class Quick{
   public static void main(String[] args){
     //System.out.println("I love you more -- Joseph");
-    for (int i = 0; i<5; i++){
-      Random rng = new Random();
-      int size = rng.nextInt(10) + 1;
-      int[] data = new int[size];
-      for (int c = 0; c<size; c++){
-        data[c] = rng.nextInt(2);
-      }
-      int k = rng.nextInt(size);
-      //System.out.println("\ndata: " + Arrays.toString(data));
-      System.out.println("the " + k + "th smallest element: " + quickselect(data, k));
-      //insertionSort(data);
-      //System.out.println("the " + k + "th smallest element according to insertion: "+ data[k]);
-      //System.out.println(Arrays.toString(data));
-      //int pivotInd = partition(data, 1, data.length-1);
-      //System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
-    }
+    int[] data = {1, 0, 0, 2, 3, 4, 3, 3};
+    System.out.println(quickselect(data, 4));
 
     //System.out.println(partition(data, 1, data.length-1));
   }
@@ -30,9 +16,14 @@ public class Quick{
      boolean foundK = false;
      while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
        int ind = partition(data, 1, data.length-1); //run partition, it's return is the final index of the partition
-       if (ind == k){ //if that index is k
+       //add to k, the index to return, however many duplicates there are of each number. For example
+       //of [1, 0, 0, 2, 3, 4, 4], if you want to get the 2rd smalles number you have to return the 3rd index, bc
+       //there are two 0s. only run this until the end of k, ones past k don't matter.
+       if (ind == k || data[ind] == data[k]){ //if that index is k
          foundK = true; //then that means it's the kth smallest element
-         return data[ind]; //and you should return it
+         //int numToReturnIndex = nextNotDuplicate(data, ind); //check that it's not the same as what's behind it. If it is, return the one after it or after that...
+         //return numToReturnIndex;
+         return data[ind];
        }
      }
      return -1; //something broken
@@ -40,7 +31,14 @@ public class Quick{
      return data[0];
    }
  }
-
+//checks for duplicates, returns first index of the next value that's not a duplicate of the previous
+ private static int nextNotDuplicate(int[] data, int maybeDuplicate){
+   if (maybeDuplicate > 0 && data[maybeDuplicate] == data[maybeDuplicate-1]){//if current is the same as the one before
+     return nextNotDuplicate(data, maybeDuplicate+1); //check the next one to see if it's still the same, if not
+   }else{
+     return maybeDuplicate; //return that index
+   }
+ }
 
 
   //start = 1 and end = data.length-1
@@ -48,6 +46,8 @@ public class Quick{
     Random rng = new Random();
     int pivotInd = rng.nextInt(data.length);
     int pivot = data[pivotInd];
+    System.out.println("PIVOT: " + pivot + "\nPIVOT INDEX: " + pivotInd);
+    System.out.println("Array before movements: " + Arrays.toString(data));
     swap(data, 0, pivotInd);//move pivot to back
     while (start != end){//when you still have left to compare
       if (data[start] > pivot){//compare
@@ -56,14 +56,18 @@ public class Quick{
       }else{
         start++;//or don't do anything, move start foward
       }
+      System.out.println("\nArray now: " + Arrays.toString(data));
+      System.out.println("Start: " + start + " End: " + end);
     }
     if (data[start] < pivot){ //you need to switch the start and pivot
       swap(data, start, 0);
+      System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
       //System.out.println("Final index of " + pivot + " is ");
-      System.out.println("data looks like: " + Arrays.toString(data));
+      //System.out.println("data looks like: " + Arrays.toString(data));
       return start;
     }else{
       swap(data, start-1, 0);
+      System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
     //  System.out.println("Final index of " + pivot + " is ");
     //  System.out.println
       return start-1;
