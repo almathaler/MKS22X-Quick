@@ -2,11 +2,8 @@ import java.util.Random;
 import java.util.Arrays;
 public class Quick{
   public static void main(String[] args){
-    //System.out.println("I love you more -- Joseph");
-    int[] data = {1, 0, 0, 2, 3, 4, 3, 3};
-    System.out.println(quickselect(data, 4));
-
-    //System.out.println(partition(data, 1, data.length-1));
+    int[] data = {4, 4, 5, 1, 65, 2, 7, 8, 45, 3, 6, 754, 23, 1, -765, 89};
+    partition(data, 1, data.length-1);
   }
   /*return the value that is the kth smallest value of the array.
  */
@@ -44,32 +41,45 @@ public class Quick{
   //start = 1 and end = data.length-1
   private static int partition(int[] data, int start, int end){
     Random rng = new Random();
-    int pivotInd = rng.nextInt(data.length);
-    int pivot = data[pivotInd];
+    int pivotInd;
+    int pivot;
+    if (data[start] > data[end] && data[start] < data[(data.length-1)/2] || data[start] < data[end] && data[start] > data[(data.length-1)/2]){
+      pivot = data[start];
+      pivotInd = start;
+    }else if (data[end] > data[start] && data[end] < data[(data.length-1)/2] || data[end] < data[start] && data[end] > data[(data.length-1)/2]){
+      pivot = data[end];
+      pivotInd = end;
+    }else{
+      pivotInd = (data.length - 1)/2;
+      pivot = data[pivotInd];
+    }
+
     System.out.println("PIVOT: " + pivot + "\nPIVOT INDEX: " + pivotInd);
-    System.out.println("Array before movements: " + Arrays.toString(data));
+  //  System.out.println("Array before movements: " + Arrays.toString(data));
     swap(data, 0, pivotInd);//move pivot to back
     while (start != end){//when you still have left to compare
-      if (data[start] > pivot){//compare
+      int dealWDupes = rng.nextInt(2);
+      if (data[start] > pivot || data[start] == pivot && dealWDupes == 0){//compare
         swap(data, start, end);//either move start to end and move end
         end--;
       }else{
         start++;//or don't do anything, move start foward
       }
-      System.out.println("\nArray now: " + Arrays.toString(data));
-      System.out.println("Start: " + start + " End: " + end);
+    //  System.out.println("\nArray now: " + Arrays.toString(data));
+    //  System.out.println("Start: " + start + " End: " + end);
     }
     if (data[start] < pivot){ //you need to switch the start and pivot
       swap(data, start, 0);
-      System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
+  //    System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
       //System.out.println("Final index of " + pivot + " is ");
-      //System.out.println("data looks like: " + Arrays.toString(data));
+      System.out.println("data looks like: " + Arrays.toString(data));
       return start;
     }else{
       swap(data, start-1, 0);
-      System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
+    //  System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
     //  System.out.println("Final index of " + pivot + " is ");
     //  System.out.println
+      System.out.println("data looks like: " + Arrays.toString(data));
       return start-1;
     }
   }
