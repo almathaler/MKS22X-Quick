@@ -50,10 +50,13 @@ public class Quick{
 
  }
  private static void quicksortHelp(int[] data, int start, int end){ //here start and end represent beginning of array to be processed and end
-   if (start!=end){ //keep going, once they're the same value stop bc that doesn't need to be ordered
+   if (start-end != -1 && start-end != 1){ //keep going, once they're the same value stop bc that doesn't need to be ordered
+     //System.out.println("start, end: " + start + ", " + end);
      int pivotInd = partition(data, start, end);
-     quicksortHelp(data, 0, pivotInd-1); //less than half, don't wanna touch pivot
-     quicksortHelp(data, pivotInd+1, data.length-1 ); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
+    // System.out.println("pivotInd: " + pivotInd);
+    // System.out.println("Array currently looks like: " + Arrays.toString(data));
+     quicksortHelp(data, start, pivotInd-1); //less than half, don't wanna touch pivot
+     quicksortHelp(data, pivotInd+1, end); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
    }//do one last call
   //quicksortHelp(data, start, end);
   //what's above should do the last sort of data having 2 members, choosing to swap or no
@@ -83,7 +86,7 @@ public class Quick{
 
   //start = 1 and end = data.length-1
   //returns final index of chosen pivot
-  private static int partition(int[] data, int start, int end){
+  public static int partition(int[] data, int start, int end){
     if (data.length == 0){
       throw new IllegalArgumentException("can't process empty data");
     }
