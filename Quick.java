@@ -5,20 +5,59 @@ public class Quick{
   //notes: for partition, start should be 1 not 0, 0th index reserved for swapping w pivot
   //keep this in mind when reading over quicksort
   public static void main(String[] args){
+    for (int i = 0; i<25; i++){
+      Random rng = new Random();
+      int size = rng.nextInt(500);
+      int[] data = new int[size];
+      int[] dataSorted = new int[size];
+      for (int c = 0; c<size; c++){
+        int toAdd = rng.nextInt(50000);
+        data[c] = toAdd;
+        dataSorted[c] = toAdd;
+      }
+     Arrays.sort(dataSorted);
+     int k = rng.nextInt(size);
+     if (dataSorted[k] == quickselect(data, k)){
+       System.out.println("TRUE!");
+     }else{
+       System.out.println("FALSE");
+     }
+
+    }
     //for (int i = 0; i<25; i++){
     //  for (int i = 0; i<10; i++){
     //int[] data = new int[25];
+    /*
     for (int i = 0; i<25; i++){
       Random rng = new Random();
-      int size = rng.nextInt(15);
+      int size = rng.nextInt(500);
       int[] data = new int[size];
+      int[] dataSorted = new int[size];
       for (int c = 0; c<size; c++){
-        data[c] = rng.nextInt(500);
+        int toAdd = rng.nextInt(50000);
+        data[c] = toAdd;
+        dataSorted[c] = toAdd;
       }
       //System.out.println(Arrays.toString(data));
-      System.out.println("The array: " + Arrays.toString(data));
-      quicksort(data);
-      System.out.println("Sorted: " + Arrays.toString(data));
+      //System.out.println("The array: " + Arrays.toString(data));
+      try{
+        quicksort(data);
+        Arrays.sort(dataSorted);
+        boolean theSame = true;
+        for (int k = 0; k<data.length; k++){
+          if (data[k] != dataSorted[k]){
+            theSame = false;
+          }
+        }
+        if (theSame){
+          System.out.println("True! Works");
+        }else{
+          System.out.println("\nNOT THE SAME\n");
+        }
+      }catch (IllegalArgumentException e){
+        System.out.println(e);
+      }
+      //System.out.println("Sorted: " + Arrays.toString(data));
     //  System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
       //int k = rng.nextInt(size);
       //System.out.println("\ndata: " + Arrays.toString(data));
@@ -29,6 +68,7 @@ public class Quick{
       //int pivotInd = partition(data, 1, data.length-1);
       //System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
     }
+    */
   //System.out.println(partition(data, 1, data.length-1));
   //  }
   //}
@@ -50,7 +90,8 @@ public class Quick{
 
  }
  private static void quicksortHelp(int[] data, int start, int end){ //here start and end represent beginning of array to be processed and end
-   if (start-end != -1 && start-end != 1){ //keep going, once they're the same value stop bc that doesn't need to be ordered
+   if (start<=end){ //start-end != -1 && start-end != 1 see <-- this is best. go on until they pass each other, then stop. will
+                    //do that last swapping part, if they're equal returns the start, and even tho you're calling qsH on invalid indexes, this if statement won't execute
      //System.out.println("start, end: " + start + ", " + end);
      int pivotInd = partition(data, start, end);
     // System.out.println("pivotInd: " + pivotInd);
@@ -61,8 +102,9 @@ public class Quick{
   //quicksortHelp(data, start, end);
   //what's above should do the last sort of data having 2 members, choosing to swap or no
  }
+ //returns which element is at kth index in sorted array
  public static int quickselect(int[] data, int k){
-   System.out.println("\nIN NEW QUICKSELECT CALL Searching for " + k);
+   //System.out.println("\nIN NEW QUICKSELECT CALL Searching for " + k);
    if (data.length > 1){
      boolean foundK = false;
      while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
@@ -70,7 +112,7 @@ public class Quick{
        //add to k, the index to return, however many duplicates there are of each number. For example
        //of [1, 0, 0, 2, 3, 4, 4], if you want to get the 2rd smalles number you have to return the 3rd index, bc
        //there are two 0s. only run this until the end of k, ones past k don't matter.
-       if (ind == k || data[ind] == data[k]){ //if that index is k
+       if (ind == k){ //if that index is k
          foundK = true; //then that means it's the kth smallest element
          //int numToReturnIndex = nextNotDuplicate(data, ind); //check that it's not the same as what's behind it. If it is, return the one after it or after that...
          //return numToReturnIndex;
@@ -143,6 +185,11 @@ public class Quick{
       return start-1;
     }
   }
+  //
+  //
+  //for testing
+  //
+  //
   private static void swap(int[] data, int ind1, int ind2){
     int temp = data[ind1];
     data[ind1] = data[ind2];
