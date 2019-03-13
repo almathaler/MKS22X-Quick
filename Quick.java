@@ -7,7 +7,7 @@ public class Quick{
   public static void main(String[] args){
     for (int i = 0; i<25; i++){
       Random rng = new Random();
-      int size = rng.nextInt(10);
+      int size = rng.nextInt(10) + 1; //so no negatives 
       int[] data = new int[size];
       int[] dataSorted = new int[size];
       for (int c = 0; c<size; c++){
@@ -16,6 +16,7 @@ public class Quick{
         dataSorted[c] = toAdd;
       }
      Arrays.sort(dataSorted);
+     System.out.println("size: " + size);
      int k = rng.nextInt(size);
      if (dataSorted[k] == quickselect(data, k)){
        System.out.println("TRUE!");
@@ -108,7 +109,7 @@ public class Quick{
    if (data.length > 1){
      boolean foundK = false;
      while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
-       int ind = partition(data, 0, data.length-1); //run partition, it's return is the final index of the partition
+       int ind = partitionRandom(data, 0, data.length-1); //run partition, it's return is the final index of the partition
        //add to k, the index to return, however many duplicates there are of each number. For example
        //of [1, 0, 0, 2, 3, 4, 4], if you want to get the 2rd smalles number you have to return the 3rd index, bc
        //there are two 0s. only run this until the end of k, ones past k don't matter.
@@ -125,7 +126,45 @@ public class Quick{
    }
  }
 
-
+ public static int partitionRandom(int[] data, int start, int end){
+   if (data.length == 0){
+     throw new IllegalArgumentException("can't process empty data");
+   }
+   if (start == end){
+     return start; //don't touch the array
+   }
+   Random rng = new Random();
+   int pivotInd = rng.nextInt(data.length);
+   int pivot = data[pivotInd];
+   int pivotAtStartInd = start;
+   swap(data, pivotAtStartInd, pivotInd);//move pivot to back
+   start++;
+   while (start != end){//when you still have left to compare
+     int dealWDupes = rng.nextInt(2);
+     if (data[start] > pivot || data[start] == pivot && dealWDupes == 0){//compare
+       swap(data, start, end);//either move start to end and move end
+       end--;
+     }else{
+       start++;//or don't do anything, move start foward
+     }
+   //  System.out.println("\nArray now: " + Arrays.toString(data));
+   //  System.out.println("Start: " + start + " End: " + end);
+   }
+   if (data[start] < pivot){ //you need to switch the start and pivot
+     swap(data, start, pivotAtStartInd);
+ //    System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
+     //System.out.println("Final index of " + pivot + " is ");
+     //System.out.println("data looks like: " + Arrays.toString(data));
+     return start;
+   }else{
+     swap(data, start-1, pivotAtStartInd);
+   //  System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
+   //  System.out.println("Final index of " + pivot + " is ");
+   //  System.out.println
+     //System.out.println("data looks like: " + Arrays.toString(data));
+     return start-1;
+   }
+ }
   //start = 1 and end = data.length-1
   //returns final index of chosen pivot
   public static int partition(int[] data, int start, int end){
