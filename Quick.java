@@ -7,7 +7,7 @@ public class Quick{
   public static void main(String[] args){
     for (int i = 0; i<25; i++){
       Random rng = new Random();
-      int size = rng.nextInt(500);
+      int size = rng.nextInt(10);
       int[] data = new int[size];
       int[] dataSorted = new int[size];
       for (int c = 0; c<size; c++){
