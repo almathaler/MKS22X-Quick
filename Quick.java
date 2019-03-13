@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Arrays;
+import java.lang.IllegalArgumentException;
 public class Quick{
   //notes: for partition, start should be 1 not 0, 0th index reserved for swapping w pivot
   //keep this in mind when reading over quicksort
@@ -9,18 +10,15 @@ public class Quick{
     //int[] data = new int[25];
     for (int i = 0; i<25; i++){
       Random rng = new Random();
-      int size = rng.nextInt(500);
+      int size = rng.nextInt(15);
       int[] data = new int[size];
       for (int c = 0; c<size; c++){
-        data[c] = rng.nextInt(5000);
+        data[c] = rng.nextInt(500);
       }
       //System.out.println(Arrays.toString(data));
-      int pivotInd = partition(data, 0, data.length-1);
-      if (sortedIsh(data, pivotInd)){
-        System.out.println("correct");
-      }else{
-        System.out.println("NOT SORTED: " + Arrays.toString(data));
-      }
+      System.out.println("The array: " + Arrays.toString(data));
+      quicksort(data);
+      System.out.println("Sorted: " + Arrays.toString(data));
     //  System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
       //int k = rng.nextInt(size);
       //System.out.println("\ndata: " + Arrays.toString(data));
@@ -44,19 +42,21 @@ public class Quick{
    //recursively, do partition(data, 1, data.length - 1) and then partition of that
    //partition call's return like this: partition(data, 1, return - 1) and also do other side:
    //partition(data, return + 1, data.length-1)
-   int pivotInd = partition(data, 1, data.length - 1);
-   quicksortHelp(data, 1, pivotInd-1);
-   quicksortHelp(data, pivotInd+2, data.length-1); //doing this bc last space is supposed to be reserved to put in pivot, don't want current pivot affected
-   //keep wroking on this!
+  try{
+    quicksortHelp(data, 0, data.length - 1);
+  }catch (IllegalArgumentException e){
+    //if the array is size 0, don't do anything to it
+  }
+
  }
  private static void quicksortHelp(int[] data, int start, int end){ //here start and end represent beginning of array to be processed and end
-   if (start != end){
+   if (start!=end){ //keep going, once they're the same value stop bc that doesn't need to be ordered
      int pivotInd = partition(data, start, end);
      quicksortHelp(data, 0, pivotInd-1); //less than half, don't wanna touch pivot
-     quicksortHelp(data, pivotInd+1, data.length-1 ); //don't wanna affect pivot, point before start is swapped w pivot
-   }//do one last call                                        //remember if pivot is behind start, start must be 2 infront of pivot so next chosen
-  quicksortHelp(data, start, end);                              //pivot can be placed
-  //what's above should do the last sort of data having 2 members, choosing to swap or no                                                //pivot can be placed
+     quicksortHelp(data, pivotInd+1, data.length-1 ); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
+   }//do one last call
+  //quicksortHelp(data, start, end);
+  //what's above should do the last sort of data having 2 members, choosing to swap or no
  }
  public static int quickselect(int[] data, int k){
    System.out.println("\nIN NEW QUICKSELECT CALL Searching for " + k);
@@ -84,6 +84,9 @@ public class Quick{
   //start = 1 and end = data.length-1
   //returns final index of chosen pivot
   private static int partition(int[] data, int start, int end){
+    if (data.length == 0){
+      throw new IllegalArgumentException("can't process empty data");
+    }
     if (start == end){
       return start; //don't touch the array
     }
