@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.lang.IllegalArgumentException;
 public class Quick{
   public static void main(String[] args){
-    for (int i = 0; i<25; i++){
+    for (int i = 0; i<3; i++){
       Random rng = new Random();
       int size = rng.nextInt(15) + 2; //so no negatives
       int[] data = new int[size];
@@ -15,7 +15,9 @@ public class Quick{
       }
      Arrays.sort(dataSorted);
      System.out.println("size: " + size);
-     partitionDutch(data, 0, (data.length-1));
+     System.out.println("Array: " + Arrays.toString(data));
+     //System.out.println("the lt and gt: " + Arrays.toString(partitionDutch(data, 0, (data.length-1))));
+     quicksortD(data);
      System.out.println("Sorted: " + Arrays.toString(dataSorted) + "\nDutched: " + Arrays.toString(data));
     }
  }
@@ -33,6 +35,22 @@ public class Quick{
        int pivotInd = partition(data, start, end);
        quicksortHelp(data, start, pivotInd-1); //less than half, don't wanna touch pivot
        quicksortHelp(data, pivotInd+1, end); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
+     }
+   }
+   //for dutch testing
+   public static void quicksortD(int[] data){
+    try{
+      quicksortHelpD(data, 0, data.length - 1);
+    }catch (IllegalArgumentException e){
+      //if the array is size 0, don't do anything to it
+    }
+
+   }
+   private static void quicksortHelpD(int[] data, int start, int end){ //here start and end represent beginning of array to be processed and end
+     if (start<=end){
+       int[] newSandEs = partitionDutch(data, start, end);
+       quicksortHelpD(data, start, newSandEs[0]); //less than half, don't wanna touch pivot
+       quicksortHelpD(data, newSandEs[1], end); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
      }
    }
    //returns which element is at kth index in sorted array
@@ -148,7 +166,7 @@ public class Quick{
         pivotInd = (end+start)/2;
         pivot = data[pivotInd];
       }
-      System.out.println("PIVOT: " + pivot);
+      //System.out.println("\n\nPIVOT: " + pivot + " PIVIND: " + pivotInd);
       pivotAtStartInd = start;
       swap(data, pivotAtStartInd, pivotInd);
       duplicateSpaceAvail = pivotAtStartInd + 1;
@@ -159,38 +177,48 @@ public class Quick{
         if (data[start] > pivot){
           swap(data, start, end); //if bigger, move to behind where pivot will eventually be placed
           end--;
+          //System.out.println("MOVED: " + Arrays.toString(data));
         }else if (data[start] == pivot){
           swap(data, start, duplicateSpaceAvail); //if same size, switch w whatever is at duplicatseSpaceAvail, then move that index up
           duplicateSpaceAvail++;
           start++; //cuz duplicateSpaceAvail is behind start, so whatever is switiched into start position will have already been sorted
+          //System.out.println("MOVED: " + Arrays.toString(data));
         }else{
           start++;
+          //System.out.println("MOVED: " + Arrays.toString(data));
         }
       }
       //now swap everything that's a duplicate w the #s before START
+    //  System.out.println("\nNOW RETURNING PIVOTS TO AROUND PIVOT'S RIGHT INDEX\n");
       if (data[start] < pivot){
         swap(data, start, pivotAtStartInd);
+        //System.out.println("RETURN: " + Arrays.toString(data));
         //filling space between 0 (will have start or start-1 val) and non-duplicates, which will be all the duplicates, w non-duplicateSpaceAvail
         // and moving duplicates to behind the pivot which is now at start or start-1
         //note: if there aren't any duplicates, this will just jumble the start section
         int j = 1; //will be increased bellow
-        for (int i = start-1; i>duplicateSpaceAvail; i--){
+        for (int i = start-1; i>=duplicateSpaceAvail; i--){
           swap(data, j, i);
+          //System.out.println("RETURN: " + Arrays.toString(data));
           j++;
         }
         //wherever j stops is the upper bound of the less than pivot part
+        j--;
         int[] toReturn = {j, end};
         return toReturn;
       }else{
         swap(data, start-1, pivotAtStartInd);
+        //System.out.println("RETURN: " + Arrays.toString(data));
         //filling space between 0 (will have start or start-1 val) and non-duplicates, which will be all the duplicates, w non-duplicateSpaceAvail
         // and moving duplicates to behind the pivot which is now at start or start-1
         int l = 1;
         //actually idt start section will be jumbled
         for (int k = (start-2); k>=duplicateSpaceAvail; k--){
           swap(data, l, k);
+          //System.out.println("RETURN: " + Arrays.toString(data));
           l++;
         } //wherever k stops is the upper bound of the less than pivot part ()
+        l--;
         int[] toReturn = {l, end}; //end is lower bound of the greater than part, upperbound is the initEnd
                                    //k is upper bound of the less than part, lowerbound is the initStart
         return toReturn;
