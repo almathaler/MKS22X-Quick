@@ -2,12 +2,10 @@ import java.util.Random;
 import java.util.Arrays;
 import java.lang.IllegalArgumentException;
 public class Quick{
-  //notes: for partition, start should be 1 not 0, 0th index reserved for swapping w pivot
-  //keep this in mind when reading over quicksort
   public static void main(String[] args){
     for (int i = 0; i<25; i++){
       Random rng = new Random();
-      int size = rng.nextInt(10) + 1; //so no negatives 
+      int size = rng.nextInt(10) + 1; //so no negatives
       int[] data = new int[size];
       int[] dataSorted = new int[size];
       for (int c = 0; c<size; c++){
@@ -23,66 +21,10 @@ public class Quick{
      }else{
        System.out.println("FALSE");
      }
-
     }
-    //for (int i = 0; i<25; i++){
-    //  for (int i = 0; i<10; i++){
-    //int[] data = new int[25];
-    /*
-    for (int i = 0; i<25; i++){
-      Random rng = new Random();
-      int size = rng.nextInt(500);
-      int[] data = new int[size];
-      int[] dataSorted = new int[size];
-      for (int c = 0; c<size; c++){
-        int toAdd = rng.nextInt(50000);
-        data[c] = toAdd;
-        dataSorted[c] = toAdd;
-      }
-      //System.out.println(Arrays.toString(data));
-      //System.out.println("The array: " + Arrays.toString(data));
-      try{
-        quicksort(data);
-        Arrays.sort(dataSorted);
-        boolean theSame = true;
-        for (int k = 0; k<data.length; k++){
-          if (data[k] != dataSorted[k]){
-            theSame = false;
-          }
-        }
-        if (theSame){
-          System.out.println("True! Works");
-        }else{
-          System.out.println("\nNOT THE SAME\n");
-        }
-      }catch (IllegalArgumentException e){
-        System.out.println(e);
-      }
-      //System.out.println("Sorted: " + Arrays.toString(data));
-    //  System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
-      //int k = rng.nextInt(size);
-      //System.out.println("\ndata: " + Arrays.toString(data));
-      //System.out.println("the " + k + "th smallest element: " + quickselect(data, k));
-      //insertionSort(data);
-      //System.out.println("the " + k + "th smallest element according to insertion: "+ data[k]);
-      //System.out.println(Arrays.toString(data));
-      //int pivotInd = partition(data, 1, data.length-1);
-      //System.out.println("correctly partitioned?: " + sortedIsh(data, pivotInd));
-    }
-    */
-  //System.out.println(partition(data, 1, data.length-1));
-  //  }
-  //}
  }
-  /*return the value that is the kth smallest value of the array.
- */
- //have to have this account for arrays of size 1
- /*Modify the array to be in increasing order.
- */
+
  public static void quicksort(int[] data){
-   //recursively, do partition(data, 1, data.length - 1) and then partition of that
-   //partition call's return like this: partition(data, 1, return - 1) and also do other side:
-   //partition(data, return + 1, data.length-1)
   try{
     quicksortHelp(data, 0, data.length - 1);
   }catch (IllegalArgumentException e){
@@ -91,41 +33,29 @@ public class Quick{
 
  }
  private static void quicksortHelp(int[] data, int start, int end){ //here start and end represent beginning of array to be processed and end
-   if (start<=end){ //start-end != -1 && start-end != 1 see <-- this is best. go on until they pass each other, then stop. will
-                    //do that last swapping part, if they're equal returns the start, and even tho you're calling qsH on invalid indexes, this if statement won't execute
-     //System.out.println("start, end: " + start + ", " + end);
+   if (start<=end){
      int pivotInd = partition(data, start, end);
-    // System.out.println("pivotInd: " + pivotInd);
-    // System.out.println("Array currently looks like: " + Arrays.toString(data));
      quicksortHelp(data, start, pivotInd-1); //less than half, don't wanna touch pivot
      quicksortHelp(data, pivotInd+1, end); //don't wanna affect pivot, point before start is swapped w pivot -->NVM UPDATED SO START IS MOVED UP AND START INDEX MADE PIVOT
-   }//do one last call
-  //quicksortHelp(data, start, end);
-  //what's above should do the last sort of data having 2 members, choosing to swap or no
+   }
  }
  //returns which element is at kth index in sorted array
  public static int quickselect(int[] data, int k){
-   //System.out.println("\nIN NEW QUICKSELECT CALL Searching for " + k);
    if (data.length > 1){
      boolean foundK = false;
-     while (!foundK){ //don't really need boolean, bc this loop is broken by an internal return
-       int ind = partitionRandom(data, 0, data.length-1); //run partition, it's return is the final index of the partition
-       //add to k, the index to return, however many duplicates there are of each number. For example
-       //of [1, 0, 0, 2, 3, 4, 4], if you want to get the 2rd smalles number you have to return the 3rd index, bc
-       //there are two 0s. only run this until the end of k, ones past k don't matter.
-       if (ind == k){ //if that index is k
-         foundK = true; //then that means it's the kth smallest element
-         //int numToReturnIndex = nextNotDuplicate(data, ind); //check that it's not the same as what's behind it. If it is, return the one after it or after that...
-         //return numToReturnIndex;
+     while (!foundK){
+       int ind = partitionRandom(data, 0, data.length-1); //use the random so no infinite loop (non-random will give same pivot over and over)
+       if (ind == k){
+         foundK = true;
          return data[ind];
        }
      }
-     return -1; //something broken
+     return -1;
    }else{
      return data[0];
    }
  }
-
+ //chooses pivot randomly for quickselect
  public static int partitionRandom(int[] data, int start, int end){
    if (data.length == 0){
      throw new IllegalArgumentException("can't process empty data");
@@ -145,34 +75,24 @@ public class Quick{
        swap(data, start, end);//either move start to end and move end
        end--;
      }else{
-       start++;//or don't do anything, move start foward
+       start++;
      }
-   //  System.out.println("\nArray now: " + Arrays.toString(data));
-   //  System.out.println("Start: " + start + " End: " + end);
    }
    if (data[start] < pivot){ //you need to switch the start and pivot
      swap(data, start, pivotAtStartInd);
- //    System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
-     //System.out.println("Final index of " + pivot + " is ");
-     //System.out.println("data looks like: " + Arrays.toString(data));
-     return start;
+      return start;
    }else{
      swap(data, start-1, pivotAtStartInd);
-   //  System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
-   //  System.out.println("Final index of " + pivot + " is ");
-   //  System.out.println
-     //System.out.println("data looks like: " + Arrays.toString(data));
      return start-1;
    }
  }
-  //start = 1 and end = data.length-1
-  //returns final index of chosen pivot
-  public static int partition(int[] data, int start, int end){
+ //chooses pivot smartly
+ public static int partition(int[] data, int start, int end){
     if (data.length == 0){
       throw new IllegalArgumentException("can't process empty data");
     }
     if (start == end){
-      return start; //don't touch the array
+      return start;
     }
     Random rng = new Random();
     int pivotInd;
@@ -184,51 +104,30 @@ public class Quick{
       pivot = data[end];
       pivotInd = end;
     }else{
-      pivotInd = (end+start)/2; //refrain from using 0s and data.length - 1, bc in quicksort we do subsets not whole array
+      pivotInd = (end+start)/2;
       pivot = data[pivotInd];
     }
-    //there might be a problem w this ^^. in an array of size 2, data[(data.length-1)/2] will just be data[0], which is Start
-    //making first and second if statements false. so will default to the last statement, which will make pivot start ajd the bit
-    //at the end
-    //actaully it's not a problem bc pivot moved to 0, start can = end skipping the while loop
-    //and end statemetns will be evaluated, which just compare start (1) and pivot (0)
-    //System.out.println("PIVOT: " + pivot + "\nPIVOT INDEX: " + pivotInd);
-  //  System.out.println("Array before movements: " + Arrays.toString(data));
- //this bariavle exists so partition called on sub array won't affect other parts
     int pivotAtStartInd = start;
-    swap(data, pivotAtStartInd, pivotInd);//move pivot to back
+    swap(data, pivotAtStartInd, pivotInd);
     start++;
-    while (start != end){//when you still have left to compare
+    while (start != end){
       int dealWDupes = rng.nextInt(2);
-      if (data[start] > pivot || data[start] == pivot && dealWDupes == 0){//compare
-        swap(data, start, end);//either move start to end and move end
+      if (data[start] > pivot || data[start] == pivot && dealWDupes == 0){
+        swap(data, start, end);
         end--;
       }else{
-        start++;//or don't do anything, move start foward
+        start++;
       }
-    //  System.out.println("\nArray now: " + Arrays.toString(data));
-    //  System.out.println("Start: " + start + " End: " + end);
     }
-    if (data[start] < pivot){ //you need to switch the start and pivot
+    if (data[start] < pivot){
       swap(data, start, pivotAtStartInd);
-  //    System.out.println("Moved pivot to appropriate index: " + start + "\n" + Arrays.toString(data));
-      //System.out.println("Final index of " + pivot + " is ");
-      //System.out.println("data looks like: " + Arrays.toString(data));
       return start;
     }else{
       swap(data, start-1, pivotAtStartInd);
-    //  System.out.println("Moved pivot to appropriate index: " + (start-1) + "\n" + Arrays.toString(data));
-    //  System.out.println("Final index of " + pivot + " is ");
-    //  System.out.println
-      //System.out.println("data looks like: " + Arrays.toString(data));
       return start-1;
     }
   }
-  //
-  //
   //for testing
-  //
-  //
   private static void swap(int[] data, int ind1, int ind2){
     int temp = data[ind1];
     data[ind1] = data[ind2];
