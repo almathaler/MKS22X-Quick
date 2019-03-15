@@ -2,28 +2,39 @@ import java.util.Random;
 import java.util.Arrays;
 import java.lang.IllegalArgumentException;
 public class Quick{
-  public static void main(String[] args){
-    /*
-    for (int i = 0; i<3; i++){
-      Random rng = new Random();
-      int size = rng.nextInt(15) + 2; //so no negatives
-      int[] data = new int[size];
-      int[] dataSorted = new int[size];
-      for (int c = 0; c<size; c++){
-        int toAdd = rng.nextInt(5);
-        data[c] = toAdd;
-        dataSorted[c] = toAdd;
+  public static void main(String[]args){
+  System.out.println("Size\t\tMax Value\tquick/builtin ratio ");
+  int[]MAX_LIST = {1000000000,500,10};
+  for(int MAX : MAX_LIST){
+    for(int size = 31250; size < 2000001; size*=2){
+      long qtime=0;
+      long btime=0;
+      //average of 5 sorts.
+      for(int trial = 0 ; trial <=5; trial++){
+        int []data1 = new int[size];
+        int []data2 = new int[size];
+        for(int i = 0; i < data1.length; i++){
+          data1[i] = (int)(Math.random()*MAX);
+          data2[i] = data1[i];
+        }
+        long t1,t2;
+        t1 = System.currentTimeMillis();
+        Quick.quicksort(data2);
+        t2 = System.currentTimeMillis();
+        qtime += t2 - t1;
+        t1 = System.currentTimeMillis();
+        Arrays.sort(data1);
+        t2 = System.currentTimeMillis();
+        btime+= t2 - t1;
+        if(!Arrays.equals(data1,data2)){
+          System.out.println("FAIL TO SORT!");
+          System.exit(0);
+        }
+      }
+      System.out.println(size +"\t\t"+MAX+"\t"+1.0*qtime/btime);
     }
-    */
-     int[] data= {0, 4, 2, 4, 1, 2, 3, 2, 3, 0};
-     int[] dataSorted = {0, 4, 2, 4, 1, 2, 3, 2, 3, 0};
-     Arrays.sort(dataSorted);
-     //System.out.println("size: " + size);
-     System.out.println("Array: " + Arrays.toString(data));
-     //System.out.println("the lt and gt: " + Arrays.toString(partitionDutch(data, 0, (data.length-1))));
-     quicksortD(data);
-     System.out.println("Sorted: " + Arrays.toString(dataSorted) + "\nquickSorted: " + Arrays.toString(data));
-
+    System.out.println();
+  }
   }
 
    public static void quicksort(int[] data){
@@ -86,37 +97,6 @@ public class Quick{
      }
      return -1; //failed
    }
-   //chooses pivot randomly for quickselect
-   public static int partitionRandom(int[] data, int start, int end){
-     if (data.length == 0){
-       throw new IllegalArgumentException("can't process empty data");
-     }
-     if (start == end){
-       return start; //don't touch the array
-     }
-     Random rng = new Random();
-     int pivotInd = rng.nextInt(data.length);
-     int pivot = data[pivotInd];
-     int pivotAtStartInd = start;
-     swap(data, pivotAtStartInd, pivotInd);//move pivot to back
-     start++;
-     while (start != end){//when you still have left to compare
-       int dealWDupes = rng.nextInt(2);
-       if (data[start] > pivot || data[start] == pivot && dealWDupes == 0){//compare
-         swap(data, start, end);//either move start to end and move end
-         end--;
-       }else{
-         start++;
-       }
-     }
-     if (data[start] < pivot){ //you need to switch the start and pivot
-       swap(data, start, pivotAtStartInd);
-        return start;
-     }else{
-       swap(data, start-1, pivotAtStartInd);
-       return start-1;
-     }
-   }
    //chooses pivot smartly
    public static int partition(int[] data, int start, int end){
       if (data.length == 0){
@@ -128,6 +108,7 @@ public class Quick{
       Random rng = new Random();
       int pivotInd;
       int pivot;
+      //decide pivot index
       if (data[start] > data[end] && data[start] < data[(end+start)/2] || data[start] < data[end] && data[start] > data[(end+start)/2]){
         pivot = data[start];
         pivotInd = start;
@@ -159,6 +140,7 @@ public class Quick{
         return start-1;
       }
     }
+    //dutch
     public static int[] partitionDutch(int[] data,int start, int end){
       if (data.length == 0){
         throw new IllegalArgumentException("can't process empty data");
